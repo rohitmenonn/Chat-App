@@ -26,6 +26,12 @@ io.on('connection', (socket) => {
         io.emit('message', 'A user has left!')
     })
 
+    socket.on('sendLocation', (coords, callback) => {
+        io.emit('message', `https://www.google.com/maps?q=${coords.latitude},${coords.longitude}`) // Not accurate at all find alternative
+        // io.emit('message', `https://www.google.com/maps/@${coords.latitude},${coords.longitude}`)
+        callback()
+    })
+
 })
 
 server.listen(port, () => {
