@@ -18,8 +18,9 @@ io.on('connection', (socket) => {
     socket.emit('message', 'Welcome!')
     socket.broadcast.emit('message', 'A new user has joined!')
 
-    socket.on('sendMessage', (message) => {
+    socket.on('sendMessage', (message, callback) => {
         io.emit('sendMessage', message)
+        callback()
     })
 
     socket.on('disconnect', () => {
@@ -27,8 +28,7 @@ io.on('connection', (socket) => {
     })
 
     socket.on('sendLocation', (coords, callback) => {
-        io.emit('message', `https://www.google.com/maps?q=${coords.latitude},${coords.longitude}`) // Not accurate at all find alternative
-        // io.emit('message', `https://www.google.com/maps/@${coords.latitude},${coords.longitude}`)
+        io.emit('locationMessage', `https://www.google.com/maps?q=${coords.latitude},${coords.longitude}`) // Not accurate at all find alternative
         callback()
     })
 
