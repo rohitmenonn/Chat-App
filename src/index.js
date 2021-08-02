@@ -10,28 +10,29 @@ const io = socketio(server)
 const port = process.env.PORT || 3000
 const publicDirectoryPath = path.join(__dirname, '../public') 
 
+const { generateMessage, generateLocationMessage } = require('./utils/messages')
+
 app.use(express.static(publicDirectoryPath));
 
 io.on('connection', (socket) => {
     console.log('New connection established')
 
-    socket.emit('message', 'Welcome!')
-    socket.broadcast.emit('message', 'A new user has joined!')
+    socket.emit('message', generateMessage('Welcome!'))
+    socket.broadcast.emit('message', generateMessage('A new user has joined!'))
 
     socket.on('sendMessage', (message, callback) => {
-        io.emit('sendMessage', message)
+        io.emit('message', generateMessage(message))
+        callback()
+    })
+
+    socket.on('sendLocation', (coords, callback) => {
+        io.emit('locationMessage', generateLocationMessage(`https://google.com/maps?q=${coords.latitude},${coords.longitude}`))
         callback()
     })
 
     socket.on('disconnect', () => {
-        io.emit('message', 'A user has left!')
+        io.emit('message', generateMessage('A user has left!'))
     })
-
-    socket.on('sendLocation', (coords, callback) => {
-        io.emit('locationMessage', `https://www.google.com/maps?q=${coords.latitude},${coords.longitude}`) // Not accurate at all find alternative
-        callback()
-    })
-
 })
 
 server.listen(port, () => {
