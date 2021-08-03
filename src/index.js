@@ -24,7 +24,7 @@ io.on('connection', (socket) => {
     })
 
     socket.on('sendMessage', (message, callback) => {
-        io.emit('message', generateMessage(message))
+        io.to('Room').emit('message', generateMessage(message))
         callback()
     })
 
